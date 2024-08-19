@@ -11,16 +11,16 @@ path_ftd_rpi = '/home/icarus/libftd2xx.so.1.4.8'
 path_lib_rpi = '/home/icarus/libEposCmd.so.6.8.1.0'
 
 # Windows PATHS
-path_lib_win = 'C:/Users/PycharmProjects/Maxon-interface/libEposCmd64.dll'
+path_lib_win = 'C:/Users/yann/PycharmProjects/Maxon-interface/EposCmd64.dll'
 
 # EPOS Variables
 NodeID = 1
 ret = 0
 keyhandle = 0
 
-VELOCITY = 10000    # RPM
-ACCELERATION = 10000    # RPM/s
-DECELERATION = 10000    # RPM/s
+VELOCITY = 6000    # RPM
+ACCELERATION = 80000    # RPM/s
+DECELERATION = 80000    # RPM/s
 
 pErrorCode = c_uint()
 pDeviceErrorCode = c_uint()
@@ -77,7 +77,7 @@ def WaitAcknowledged():
 
 def check_error(ret, function_name, value):
     if ret == 0:
-        print('Error' + function_name)
+        print('Error ' + function_name)
         return 0
     else:
         return value
@@ -108,6 +108,11 @@ def go_to_position(position):
     ret = epos.VCS_MoveToPosition(keyhandle, NodeID, position, 0, 0, byref(pErrorCode))
     print(check_error(ret, 'go to position', 1))
     ret = WaitAcknowledged()
+
+
+def go_home():
+    current_position = get_position()
+    go_to_position(-current_position)
     
 
 def enable_epos():
