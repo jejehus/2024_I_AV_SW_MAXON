@@ -14,7 +14,7 @@ path_lib_rpi = '/home/icarus/libEposCmd.so.6.8.1.0'
 path_lib_win = 'C:/Users/yann/PycharmProjects/Maxon-interface/EposCmd64.dll'
 
 # EPOS Variables
-NodeID = 1
+NodeID_1 = 1
 ret = 0
 keyhandle = 0
 
