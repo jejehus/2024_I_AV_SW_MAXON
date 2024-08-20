@@ -13,7 +13,7 @@ path_lib_rpi = '/home/icarus/libEposCmd.so.6.8.1.0'
 path_lib_win = 'C:/Users/yann/PycharmProjects/Maxon-interface/EposCmd64.dll'
 
 
-def epos_setup(NodeID):
+def epos_setup(NodeID, usb):
     # EPOS Variables
     ret = 0
     keyhandle = 0
@@ -31,11 +31,11 @@ def epos_setup(NodeID):
         cdll.LoadLibrary(path_lib_rpi)
         epos = CDLL(path_lib_rpi)
         # open epos4 using rjs
-        keyhandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'RS232', b'/dev/ttyS0', byref(pErrorCode))
+        keyhandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'USB', usb, byref(pErrorCode))
     else:
         cdll.LoadLibrary(path_lib_win)
         epos = CDLL(path_lib_win)
-        keyhandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'USB', b'USB0', byref(pErrorCode))
+        keyhandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'USB', usb, byref(pErrorCode))
 
 
     if keyhandle != 0:
@@ -46,7 +46,6 @@ def epos_setup(NodeID):
 
         # Set position profile
         ret = epos.VCS_SetPositionProfile(keyhandle, NodeID, VELOCITY, ACCELERATION, DECELERATION, byref(pErrorCode))
-
     else:
         print('EPOS4 not opened')
     return epos, keyhandle, NodeID, pErrorCode, pDeviceErrorCode

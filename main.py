@@ -64,7 +64,7 @@ def go_to_position(epos, keyhandle, NodeID, pErrorCode, position):
 
 
 def move_to_position(epos, keyhandle, NodeID, pErrorCode, position):
-    ret = epos.VCS_MoveToPosition(keyhandle, NodeID, position, 0, 1, byref(pErrorCode))
+    ret = epos.VCS_MoveToPosition(keyhandle, NodeID, position, 1, 1, byref(pErrorCode))
     print(check_error(ret, 'move to position', 1))
     ret = WaitAcknowledged(epos, keyhandle, NodeID, pErrorCode)
 
@@ -76,6 +76,7 @@ def go_home(epos, keyhandle, NodeID, pErrorCode):
 
 def enable_epos(epos, keyhandle, NodeID, pErrorCode):
     ret = epos.VCS_SetEnableState(keyhandle, NodeID, byref(pErrorCode))
+    print(pErrorCode, NodeID)
     print(check_error(ret, 'enable epos', 1))
 
 
@@ -84,7 +85,7 @@ def disable_epos(epos, keyhandle, NodeID, pErrorCode):
 
 
 def set_motor_to_sinus_commuted_mode(epos, keyhandle, NodeID, pErrorCode):
-    ret = epos.VCS_SetMotorType(keyhandle, NodeID, 10, byref(pErrorCode))
+    ret = epos.VCS_SetMotorType(keyhandle, NodeID, 0x2, byref(pErrorCode))
     print(check_error(ret, 'set motor', 1))
 
 
