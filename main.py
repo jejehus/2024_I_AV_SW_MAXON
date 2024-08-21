@@ -69,9 +69,14 @@ def move_to_position(epos, keyhandle, NodeID, pErrorCode, position):
     ret = WaitAcknowledged(epos, keyhandle, NodeID, pErrorCode)
 
 
+def set_home_position(epos, keyhandle, NodeID, pErrorCode):
+    ret = epos.VCS_SetObject(keyhandle, NodeID, 0x2081, 0x00, 0x00, 0x00, byref(pErrorCode))
+    print(check_error(ret, 'set home position', 1))
+    ret = WaitAcknowledged(epos, keyhandle, NodeID, pErrorCode)
+
+
 def go_home(epos, keyhandle, NodeID, pErrorCode):
-    current_position = get_position(epos, keyhandle, NodeID, pErrorCode)
-    go_to_position(epos, keyhandle, NodeID, pErrorCode, -current_position)
+    move_to_position(epos, keyhandle, NodeID, pErrorCode, 0)
 
 
 def enable_epos(epos, keyhandle, NodeID, pErrorCode):
