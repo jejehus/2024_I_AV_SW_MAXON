@@ -30,6 +30,7 @@ def epos_setup(RPI, NodeID, usb, path_win):
         epos = CDLL(path_lib_rpi)
         # open epos4 using rjs
         keyhandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'USB', usb, byref(pErrorCode))
+        #keyhandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON_RS232', b'RS232', 'COM1', byref(pErrorCode))
     else:
         cdll.LoadLibrary(path_win)
         epos = CDLL(path_win)
