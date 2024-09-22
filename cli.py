@@ -48,12 +48,18 @@ def disable():
 
 def go_home():
     for motor in motors:
-        go_home(motor[0], motor[1], motor[2], motor[3])
+        go_home_motor(motor[0], motor[1], motor[2], motor[3])
 
 
 def set_home():
     for motor in motors:
         set_home_position(motor[0], motor[1], motor[2], motor[3])
+    main()
+
+
+def get_current_position_motors():
+    for motor in motors:
+        print(get_current_position(motor[0], motor[1], motor[2], motor[3]))
 
 
 def move():
@@ -102,26 +108,31 @@ def intro():
 
 
 def main():
-    print('You can now choose the following options, remember to enable the motors before moving them.')
-    print(colored('• Enable Motors (1)', 'green'))
-    print(colored('• Disable Motors (2)', 'green'))
-    print(colored('• Go Home (3)', 'green'))
-    print(colored('• Set Home (4)', 'green'))
-    print(colored('• Move Motors (5)', 'green'))
-    choice = int(input())
-    if choice == 1:
-        enable()
-    elif choice == 2:
-        disable()
-    elif choice == 3:
-        go_home()
-    elif choice == 4:
-        set_home()
-    elif choice == 5:
-        move()
-    else:
-        print('Invalid input, please enter a valid number')
-        main()
+    while True:
+        choice = 0
+        print('You can now choose the following options, remember to enable the motors before moving them.')
+        print(colored('• Enable Motors (1)', 'green'))
+        print(colored('• Disable Motors (2)', 'green'))
+        print(colored('• Go Home (3)', 'green'))
+        print(colored('• Set Home (4)', 'green'))
+        print(colored('• Move Motors (5)', 'green'))
+        print(colored('• Get position (6)', 'green'))
+        choice = int(input())
+        if choice == 1:
+            enable()
+        elif choice == 2:
+            disable()
+        elif choice == 3:
+            go_home()
+        elif choice == 4:
+            set_home()
+        elif choice == 5:
+            move()
+        elif choice == 6:
+            get_current_position_motors()
+        else:
+            print('Invalid input, please enter a valid number')
+            main()
 
 
 intro()

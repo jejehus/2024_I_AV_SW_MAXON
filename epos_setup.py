@@ -17,7 +17,7 @@ def epos_setup(RPI, NodeID, usb, path_win):
     keyhandle = 0
 
     VELOCITY = 6000    # RPM
-    ACCELERATION = 80000    # RPM/s
+    ACCELERATION = 80000   # RPM/s
     DECELERATION = 80000    # RPM/s
 
     pErrorCode = c_uint()

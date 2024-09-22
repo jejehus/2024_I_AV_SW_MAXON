@@ -1,7 +1,11 @@
 # Import
+import ctypes
 from ctypes import *
 import time
 import threading
+
+
+POSITION = 0
 
 
 # Functions
@@ -70,13 +74,48 @@ def move_to_position(epos, keyhandle, NodeID, pErrorCode, position):
 
 
 def set_home_position(epos, keyhandle, NodeID, pErrorCode):
-    ret = epos.VCS_SetObject(keyhandle, NodeID, 0x2081, 0x00, 0x00, 0x00, byref(pErrorCode))
+    current_position = get_current_position(epos, keyhandle, NodeID, pErrorCode)
+
+    print(f"Current position: {current_position}")
+
+    object_index = 0x30B0
+    object_sub_index = 0x00
+    number_of_bytes_to_read = 0x04
+    number_of_bytes_read = c_uint()
+
+    # Convert current_position to ctypes INTEGER32 (4 bytes)
+    current_position_c = ctypes.c_int32(current_position)
+
+
+    # Prepare the number of bytes to write (INTEGER32 is 4 bytes)
+
+    # Call VCS_SetObject and pass the current position by reference
+    ret = epos.VCS_SetObject(keyhandle, NodeID, object_index, object_sub_index,
+                                ctypes.byref(current_position_c),
+                                number_of_bytes_to_read,
+                                ctypes.byref(number_of_bytes_read),
+                                ctypes.byref(pErrorCode))
+
+    if ret == 0:
+        print(f"Error setting home position: {pErrorCode.value}")
+    else:
+        print("Home position set successfully")
+
+    epos.VCS_DefinePosition(keyhandle, NodeID, 0, byref(pErrorCode))
+
+    # Assuming check_error is a valid function that handles error reporting
     print(check_error(ret, 'set home position', 1))
-    ret = WaitAcknowledged(epos, keyhandle, NodeID, pErrorCode)
 
-
-def go_home(epos, keyhandle, NodeID, pErrorCode):
+def go_home_motor(epos, keyhandle, NodeID, pErrorCode):
     move_to_position(epos, keyhandle, NodeID, pErrorCode, 0)
+
+
+def get_current_position(epos, keyhandle, NodeID, pErrorCode):
+    pPositionIs = c_long()
+    ret = epos.VCS_GetPositionIs(keyhandle, NodeID, byref(pPositionIs), byref(pErrorCode))
+    global POSITION
+    POSITION = pPositionIs.value
+    return check_error(ret, 'get current position', pPositionIs.value)
 
 
 def enable_epos(epos, keyhandle, NodeID, pErrorCode):
