@@ -139,3 +139,16 @@ def go_to_position_thread(epos, keyhandle, NodeID, pErrorCode, position):
 
 def move_to_position_thread(epos, keyhandle, NodeID, pErrorCode, position):
     move_to_position(epos, keyhandle, NodeID, pErrorCode, position)
+
+
+# Velocity mode functions, can't be used for PositionMode
+def move_with_velocity(epos, keyhandle, NodeID, pErrorCode, velocity):
+    ret = epos.VCS_MoveWithVelocity(keyhandle, NodeID, velocity, byref(pErrorCode))
+    print(check_error(ret, 'move with velocity', 1))
+    ret = WaitAcknowledged(epos, keyhandle, NodeID, pErrorCode)
+
+
+def stop(epos, keyhandle, NodeID, pErrorCode):
+    ret = epos.VCS_HaltVelocityMovement(keyhandle, NodeID, byref(pErrorCode))
+    print(check_error(ret, 'stop', 1))
+    ret = WaitAcknowledged(epos, keyhandle, NodeID, pErrorCode)
