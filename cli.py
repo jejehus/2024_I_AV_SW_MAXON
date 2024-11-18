@@ -96,11 +96,12 @@ def intro():
     set_environment(int(input()))
     if RPI == 0:
         set_path(input('Please enter the path to the EposCmd64.dll file (C:/PATH-TO-LIB/EposCmd64.dll): '))
+    mode = input('Please select the mode you would like to use (0 = Position mode, 1 = Velocity mode): ')
     print('Please select the amount of motors you would like to control.')
     motor_selector()
     print('Setting up motors...')
     for i in range(AMOUNT_OF_MOTORS):
-        motors.append(epos_setup(RPI, i, b'USB' + str(i).encode(), PATH_LIB_WIN))
+        motors.append(epos_setup(RPI, i, b'USB' + str(i).encode(), PATH_LIB_WIN, mode))
         print('Motor ' + str(i + 1) + ' setup complete')
     print('If you dont see any errors, the motors are ready to be controlled.')
     main()
