@@ -1,4 +1,3 @@
-from termcolor import colored
 from epos_setup import epos_setup
 from main import *
 import time
@@ -70,10 +69,10 @@ def move():
     while num_of_movements > 0:
         for motor in motors:
             move_to_position(motor[0], motor[1], motor[2], motor[3], max_position)
-            time.sleep(0.4)
+            time.sleep(1)
         for motor in motors:
             move_to_position(motor[0], motor[1], motor[2], motor[3], min_position)
-            time.sleep(0.4)
+            time.sleep(1)
 
         num_of_movements -= 1
 
@@ -93,7 +92,7 @@ def intro():
     message_amount_select = """
     Welcome to the Maxon Motor interface, to start, please select the your environment (RPI = 1, PC = 0).
     """
-    print(colored(message_home, 'blue') + message_amount_select)
+    print(message_home + message_amount_select)
     set_environment(int(input()))
     if RPI == 0:
         set_path(input('Please enter the path to the EposCmd64.dll file (C:/PATH-TO-LIB/EposCmd64.dll): '))
@@ -111,12 +110,12 @@ def main():
     while True:
         choice = 0
         print('You can now choose the following options, remember to enable the motors before moving them.')
-        print(colored('• Enable Motors (1)', 'green'))
-        print(colored('• Disable Motors (2)', 'green'))
-        print(colored('• Go Home (3)', 'green'))
-        print(colored('• Set Home (4)', 'green'))
-        print(colored('• Move Motors (5)', 'green'))
-        print(colored('• Get position (6)', 'green'))
+        print('• Enable Motors (1)', 'green')
+        print('• Disable Motors (2)', 'green')
+        print('• Go Home (3)', 'green')
+        print('• Set Home (4)', 'green')
+        print('• Move Motors (5)', 'green')
+        print('• Get position (6)', 'green')
         choice = int(input())
         if choice == 1:
             enable()
