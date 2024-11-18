@@ -69,10 +69,10 @@ def move():
     while num_of_movements > 0:
         for motor in motors:
             move_to_position(motor[0], motor[1], motor[2], motor[3], max_position)
-            time.sleep(1)
+        time.sleep(1)
         for motor in motors:
             move_to_position(motor[0], motor[1], motor[2], motor[3], min_position)
-            time.sleep(1)
+        time.sleep(1)
 
         num_of_movements -= 1
 
