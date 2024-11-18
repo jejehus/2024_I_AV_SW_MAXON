@@ -1,11 +1,39 @@
 from epos_setup import epos_setup
 from main import *
 import time
+import threading
 
 AMOUNT_OF_MOTORS = 0
 RPI = 0
 PATH_LIB_WIN = ''
 motors = []
+
+
+# Global flag to stop threads
+stop_threads = False
+
+# Function to get current position and write to CSV
+def get_current_position_loop(motors_current, csv_file):
+    with open(csv_file, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Timestamp', 'Position'])
+        while not stop_threads:
+            positions = []
+            for motor in motors_current:
+                position = get_current_position(motor[0], motor[1], motor[2], motor[3])
+                positions.append(position)
+            writer.writerow([time.time(), positions])
+
+# Function to move to position in a loop
+def go_to_position_loop(motors_current, positions, cycles):
+    while cycles > 0:
+        for motor in motors_current:
+            move_to_position(motor[0], motor[1], motor[2], motor[3], positions[0])
+        time.sleep(0.5)
+        for motor in motors_current:
+            move_to_position(motor[0], motor[1], motor[2], motor[3], positions[1])
+        time.sleep(0.5)
+        cycles -= 1
 
 
 def motor_selector():
@@ -62,19 +90,26 @@ def get_current_position_motors():
 
 
 def move():
+    global stop_threads
+    stop_threads = False
     print('Please enter the maximum and minimum position you would like to move the motors to.')
     max_position = int(input('Max position: '))
     min_position = int(input('Min position: '))
     num_of_movements = int(input('Please enter the amount of movements you would like to make: '))
-    while num_of_movements > 0:
-        for motor in motors:
-            move_to_position(motor[0], motor[1], motor[2], motor[3], max_position)
-            time.sleep(1)
-        for motor in motors:
-            move_to_position(motor[0], motor[1], motor[2], motor[3], min_position)
-            time.sleep(1)
 
-        num_of_movements -= 1
+    positions = [max_position, min_position]
+    csv_file = 'positions.csv'
+
+    thread_motor = threading.Thread(target=go_to_position_loop, args=(motors, positions, num_of_movements))
+    thread_pos = threading.Thread(target=get_current_position_loop, args=(motors, csv_file))
+
+    thread_motor.start()
+    thread_pos.start()
+
+    thread_motor.join()
+    stop_threads = True
+    thread_pos.join()
+
 
 
 def intro():
