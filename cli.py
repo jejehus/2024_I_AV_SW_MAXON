@@ -11,27 +11,32 @@ motors = []
 
 # Global flag to stop threads
 stop_threads = False
-
+target_positions = []
 # Function to get current position and write to CSV
+
 def get_current_position_loop(motors_current, csv_file):
+    global target_positions
     with open(csv_file, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['Timestamp', 'Position'])
+        writer.writerow(['Timestamp', 'Actual Position', 'Target Position'])
         while not stop_threads:
             positions = []
             for motor in motors_current:
                 position = get_current_position(motor[0], motor[1], motor[2], motor[3])
                 positions.append(position)
-            writer.writerow([time.time(), positions])
+            writer.writerow([time.time(), positions, target_positions])
 
 # Function to move to position in a loop
 def go_to_position_loop(motors_current, positions, cycles):
+    global target_positions
     while cycles > 0:
         for motor in motors_current:
             move_to_position(motor[0], motor[1], motor[2], motor[3], positions[0])
+        target_positions = [positions[0]]
         time.sleep(0.5)
         for motor in motors_current:
             move_to_position(motor[0], motor[1], motor[2], motor[3], positions[1])
+        target_positions = [positions[1]]
         time.sleep(0.5)
         cycles -= 1
 
@@ -98,7 +103,7 @@ def move():
     num_of_movements = int(input('Please enter the amount of movements you would like to make: '))
 
     positions = [max_position, min_position]
-    csv_file = 'positions.csv'
+    csv_file = 'positions_' + str(time.time()) + '.csv'
 
     thread_motor = threading.Thread(target=go_to_position_loop, args=(motors, positions, num_of_movements))
     thread_pos = threading.Thread(target=get_current_position_loop, args=(motors, csv_file))
